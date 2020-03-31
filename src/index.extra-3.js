@@ -2,38 +2,34 @@
 /** @jsxFrag React.Fragment */
 import {jsx} from '@emotion/core'
 
+import 'bootstrap/dist/css/bootstrap-reboot.css'
+import '@reach/dialog/styles.css'
 import React from 'react'
+import ReactDOM from 'react-dom'
 import VisuallyHidden from '@reach/visually-hidden'
-import * as colors from './styles/colors'
 import {
-  CircleButton,
   Button,
-  Spinner,
-  FormGroup,
+  Input,
+  CircleButton,
   Dialog,
+  FormGroup,
+  Spinner,
 } from './components/lib'
 import {Logo} from './components/logo'
-import {Input} from './components/lib'
-import {useAuth} from './context/auth-context'
-import {useAsync} from './utils/use-async'
 
 function LoginForm({onSubmit, buttonText}) {
-  const {isLoading, isError, error, run} = useAsync()
   function handleSubmit(event) {
     event.preventDefault()
     const {username, password} = event.target.elements
 
-    run(
-      onSubmit({
-        username: username.value,
-        password: password.value,
-      }),
-    )
+    onSubmit({
+      username: username.value,
+      password: password.value,
+    })
   }
 
   return (
     <form
-      onSubmit={handleSubmit}
       css={{
         display: 'flex',
         flexDirection: 'column',
@@ -44,6 +40,7 @@ function LoginForm({onSubmit, buttonText}) {
           maxWidth: '300px',
         },
       }}
+      onSubmit={handleSubmit}
     >
       <FormGroup>
         <label htmlFor="username">Username</label>
@@ -55,12 +52,9 @@ function LoginForm({onSubmit, buttonText}) {
       </FormGroup>
       <div>
         <Button type="submit">
-          {buttonText} {isLoading ? <Spinner css={{marginLeft: 5}} /> : null}
+          {buttonText} <Spinner css={{marginLeft: 5}} />
         </Button>
       </div>
-      {isError ? (
-        <div css={{color: colors.danger}}>{error?.message}</div>
-      ) : null}
     </form>
   )
 }
@@ -84,8 +78,14 @@ function Modal({button, label, children}) {
   )
 }
 
-function UnauthenticatedApp() {
-  const {login, register} = useAuth()
+function App() {
+  function login(formData) {
+    console.log('login', formData)
+  }
+
+  function register(formData) {
+    console.log('register', formData)
+  }
 
   return (
     <div
@@ -123,4 +123,4 @@ function UnauthenticatedApp() {
   )
 }
 
-export default UnauthenticatedApp
+ReactDOM.render(<App />, document.getElementById('root'))
